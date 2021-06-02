@@ -62,9 +62,10 @@ class avobject_model(nn.Module):
             
             counter+=1
             loss += nloss.detach().cpu();
-            sys.stdout.write("progress: %d / %d , Loss %.5f \n"%(counter*stepsize, len(loader)*stepsize, loss/counter))
+            sys.stdout.write("\r progress: %d / %d , Loss %.5f"%(counter*stepsize, len(loader)*stepsize, loss/counter))
             sys.stdout.flush();
-        return loss/counter, 1
+        sys.stdout.write("\n");
+        return loss/counter
     def predict(self, data):
         video, audio = data['video'], data['audio']
         pad_len = 4

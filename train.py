@@ -14,7 +14,7 @@ from torch.utils.data import DataLoader
 parser = argparse.ArgumentParser(description = "TrainArgs");
 
 ## Data loader
-parser.add_argument('--batch_size', type=int, default=64, help='')
+parser.add_argument('--batch_size', type=int, default=8, help='')
 ## Training details
 parser.add_argument('--max_epoch', type=int, default=100, help='Maximum number of epochs');
 
@@ -50,7 +50,7 @@ if not(os.path.exists(result_save_path)):
 
 # ==================== LOAD MODEL ====================
 
-s = avobejct_model(learning_rate=args.lr, nOut=args.nOut, n_neg=args.n_neg)
+s = avobject_model(learning_rate=args.lr, nOut=args.nOut, n_neg=args.n_neg)
 
 # ==================== EVALUATE LIST ====================
 
@@ -83,8 +83,8 @@ for ii in range(0,it-1):
 
 print('Reading data ...')
 
-train_dataset = Datagen(args.train_list, window_size=args.window_size)
-val_dataset = Datagen(args.verify_list, window_size=args.window_size)
+train_dataset = Datagen(args.train_list)
+val_dataset = Datagen(args.verify_list)
 trainLoader = DataLoader(train_dataset, batch_size=args.batch_size, 
                          shuffle=True, pin_memory=True)
 valLoader = DataLoader(val_dataset, batch_size=args.batch_size, 

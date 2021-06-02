@@ -7,10 +7,10 @@ import sys
 from model import SyncNetModel
 import os
 from tqdm import tqdm
-class avobejct_model(nn.Module):
+class avobject_model(nn.Module):
 
     def __init__(self, learning_rate=0.0001, nOut=1024, n_neg=4):
-        super(avobejct_model, self).__init__();
+        super(avobject_model, self).__init__();
         
         self.n_neg = n_neg
         self.__S__ = SyncNetModel(nOut=nOut).cuda();
@@ -62,7 +62,7 @@ class avobejct_model(nn.Module):
             
             counter+=1
             loss += nloss.detach().cpu();
-            sys.stdout.write("progress: %d / %d , Loss %.5f \n"%(counter*stepsize, len(loader*stepsize), loss/counter))
+            sys.stdout.write("progress: %d / %d , Loss %.5f \n"%(counter*stepsize, len(loader)*stepsize, loss/counter))
             sys.stdout.flush();
         return loss/counter, 1
     def predict(self, data):

@@ -98,12 +98,12 @@ clr = s.updateLearningRate(1)
 while(1):   
     print(time.strftime("%Y-%m-%d %H:%M:%S"), it, "Start Iteration");
 
-    loss, trainacc = s.train_network(trainLoader, evalmode=False);
-    valloss, valacc = s.train_network(valLoader,   evalmode=True);
+    loss = s.train_network(trainLoader, evalmode=False);
+    valloss = s.train_network(valLoader,   evalmode=True);
 
 
-    print(time.strftime("%Y-%m-%d %H:%M:%S"), "%s: IT %d, LR %f, TACC %2.2f, TLOSS %f, VACC %2.2f, VLOSS %f\n"%(args.save_path, it, max(clr), trainacc, loss, valacc, valloss));
-    scorefile.write("IT %d, LR %f, TACC %2.2f, TLOSS %f, VACC %2.2f, VLOSS %f\n"%(it, max(clr), trainacc, loss, valacc, valloss));
+    print(time.strftime("%Y-%m-%d %H:%M:%S"), "%s: IT %d, LR %f,TLOSS %f, VLOSS %f\n"%(args.save_path, it, max(clr), loss, valloss));
+    scorefile.write("IT %d, LR %f, TLOSS %f, VLOSS %f\n"%(it, max(clr), loss, valloss));
     scorefile.flush()
 
     # ==================== SAVE MODEL ====================

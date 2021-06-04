@@ -120,12 +120,21 @@ class avobject_model(nn.Module):
         aud = aud.transpose(1, 2)[..., None, None]
 
         cos_similarity = self.cos(vid, aud)
-        att_map = self.logits_scale(cos_similarity[..., None]).squeeze(-1)
-        scores = torch.nn.MaxPool3d(kernel_size=(1, att_map.shape[-2],
-                                                att_map.shape[-1]))(att_map)
+        scores = self.logits_scale(cos_similarity[..., None]).squeeze(-1)
+        att_map = self.logsoftmax_2d(scores)
+        
+        scores = torch.nn.MaxPool3d(kernel_size=(1, scores.shape[-2],
+                                                scores.shape[-1]))(scores)
         scores = scores.squeeze()
         return scores, att_map
 
+    def logsoftmax_2d(self, logits):
+        # Log softmax on last 2 dims because torch won't allow multiple dims
+        orig_shape = logits.shape
+        logprobs = torch.nn.LogSoftmax(dim=-1)(
+            logits.reshape(list(logits.shape[:-2]) + [-1])).reshape(orig_shape)
+        return logprobs
+    
     def updateLearningRate(self, alpha):
 
         learning_rate = []

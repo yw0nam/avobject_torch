@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.nn import functional as F
+
 import time
 import sys
 from model import SyncNetModel
@@ -81,6 +82,7 @@ class avobject_model(nn.Module):
             vid_sync, aud_sync, label = self.create_online_sync_negatives(norm_vid, norm_aud)
             score, att_map = self.calc_av_scores(vid_sync, aud_sync)
         return score, att_map, vid_sync, aud_sync, label
+    
     def create_online_sync_negatives(self, vid_emb, aud_emb, n_neg=4):
 
         assert n_neg % 2 == 0
@@ -96,10 +98,18 @@ class avobject_model(nn.Module):
         # this is the index of the positive samples within the posneg bundle
         pos_idx = n_neg // 2
         aud_emb_pos = aud_emb[:, 0, :, fr_trunc:to_trunc]
-
         # make sure that we got the indices correctly
         assert torch.all(aud_emb_posneg[:, pos_idx] == aud_emb_pos)
-
+        
+        # Shuffle negative samples and positive samples
+        idx = torch.randperm(aud_emb_posneg.shape[1])
+        aud_emb_posneg = aud_emb_posneg[:, idx].view(aud_emb_posneg.size())
+        pos_idx = (idx == pos_idx).nonzero(as_tuple=True)[0].item()
+        
+        # Note, Torch don't allow pythonic swap like a, b = b, a
+        # Once more, Check that we got the indices correctly
+        assert torch.all(aud_emb_posneg[:, pos_idx] == aud_emb_pos)
+        
         return vid_emb_pos, aud_emb_posneg, pos_idx
         
     def calc_av_scores(self, vid, aud):
@@ -128,7 +138,6 @@ class avobject_model(nn.Module):
     def saveParameters(self, path):
 
         torch.save(self.state_dict(), path);
-
 
     ## ===== ===== ===== ===== ===== ===== ===== =====
     ## Load parameters

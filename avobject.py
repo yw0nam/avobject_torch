@@ -67,6 +67,61 @@ class avobject_model(nn.Module):
             sys.stdout.flush();
         sys.stdout.write("\n");
         return loss/counter
+    
+    def train_network_with_random(self,loader=None,evalmode=None):
+
+        if evalmode:
+            self.eval();
+        else:
+            self.train();
+            
+        loss    = 0
+        counter = 0
+        index = 0
+        stepsize = loader.batch_size
+        criterion = ContrastiveLoss()
+        
+        for data in loader:
+            
+            self.__optimizer__.zero_grad();
+            video, audio, false_audio = data['video'], data['audio'], data['false_audio']
+            
+            # padding for cover all image
+            pad_len = 4
+            video = torch.nn.ConstantPad3d([pad_len, pad_len, pad_len, pad_len],
+                                            0)(video)
+            if evalmode:
+                with torch.no_grad():
+                    out_vid = self.__S__.forward_vid(video.cuda(), return_feat=False)
+                    out_aud = self.__S__.forward_aud(audio.cuda())
+                    out_false_aud = self.__S__.forward_aud(false_audio.cuda())
+            else:
+                out_vid = self.__S__.forward_vid(video.cuda(), return_feat=False)
+                out_aud = self.__S__.forward_aud(audio.cuda())
+                out_false_aud = self.__S__.forward_aud(false_audio.cuda())
+                
+            norm_vid = F.normalize(out_vid, p=2, dim=1)
+            
+            norm_aud = F.normalize(out_aud, p=2, dim=1)
+            norm_aud = norm_aud.permute(0, 3, 1, 2)
+            norm_false_aud = F.normalize(out_false_aud, p=2, dim=1)
+            norm_false_aud = norm_false_aud.permute(0, 3, 1, 2)
+            
+            vid_sync, aud_sync, label = self.create_online_sync_negatives_random_sample(norm_vid, norm_aud, norm_false_aud)
+            score, _ = self.calc_av_scores(vid_sync, aud_sync)
+            
+            nloss = criterion(score, label)
+            if not evalmode:
+                nloss.backward()
+                self.__optimizer__.step();
+            
+            counter+=1
+            loss += nloss.detach().cpu();
+            sys.stdout.write("\r progress: %d / %d , Loss %.5f"%(counter*stepsize, len(loader)*stepsize, loss/counter))
+            sys.stdout.flush();
+        sys.stdout.write("\n");
+        return loss/counter
+    
     def predict(self, data):
         video, audio = data['video'], data['audio']
         pad_len = 4
@@ -108,6 +163,34 @@ class avobject_model(nn.Module):
         
         # Note, Torch don't allow pythonic swap like a, b = b, a
         # Once more, Check that we got the indices correctly
+        assert torch.all(aud_emb_posneg[:, pos_idx] == aud_emb_pos)
+        
+        return vid_emb_pos, aud_emb_posneg, pos_idx
+    
+    def create_online_sync_negatives_random_sample(self, vid_emb, aud_emb, false_aud_emb):
+
+        assert self.n_neg % 2 == 0
+        ww = self.n_neg // 2
+
+        fr_trunc, to_trunc = ww, false_aud_emb.shape[-1] - ww
+        vid_emb_pos = vid_emb[:, :, fr_trunc:to_trunc]
+        slice_size = to_trunc - fr_trunc
+
+        aud_emb_posneg = false_aud_emb.squeeze(1).unfold(-1, slice_size, 1)
+        aud_emb_posneg = aud_emb_posneg.permute([0, 2, 1, 3])
+
+        # this is the index of the positive samples within the posneg bundle
+        pos_idx = self.n_neg // 2
+        aud_emb_pos = aud_emb[:, 0, :, fr_trunc:to_trunc]
+        
+        # Shuffle negative samples and positive samples
+        
+        idx = torch.randperm(aud_emb_posneg.shape[1])
+        aud_emb_posneg = aud_emb_posneg[:, idx].view(aud_emb_posneg.size())
+        pos_idx = (idx == pos_idx).nonzero(as_tuple=True)[0].item()
+        aud_emb_posneg[:, pos_idx] = aud_emb_pos
+        
+        # Check that we got the indices correctly
         assert torch.all(aud_emb_posneg[:, pos_idx] == aud_emb_pos)
         
         return vid_emb_pos, aud_emb_posneg, pos_idx

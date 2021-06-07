@@ -11,7 +11,7 @@ parser.add_argument('--test',  type=str, default="./data/test.txt", help='');
 
 args = parser.parse_args();
 
-files = glob.glob(args.root_dir+'/pycrop/*/*')
+files = glob.glob(args.root_dir+'*/pycrop/*/*')
 # dev = glob.glob(args.root_dir+'/pycrop/*/*')
 dev, test = train_test_split(files, test_size=0.1, random_state=1004)
 

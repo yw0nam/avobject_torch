@@ -17,10 +17,12 @@ parser = argparse.ArgumentParser(description = "TrainArgs");
 parser.add_argument('--batch_size', type=int, default=8, help='')
 ## Training details
 parser.add_argument('--max_epoch', type=int, default=100, help='Maximum number of epochs');
+parser.add_argument('--random_sample', type=bool, default=False, help='Sample audio from different video track');
+parser.add_argument('--window_size', type=int,  default=50, help='Sample window size');
+parser.add_argument('--n_neg', type=int,  default=20, help='negative sample number');
 
 ## Model definition
 parser.add_argument('--nOut', type=int,  default=1024, help='Embedding size in the last FC layer');
-parser.add_argument('--n_neg', type=int,  default=4, help='negative sample number');
 
 ## Learning rates
 parser.add_argument('--lr', type=float, default=0.001, help='Learning rate');
@@ -83,9 +85,12 @@ for ii in range(0,it-1):
 
 print('Reading data ...')
 
-train_dataset = Datagen(args.train_list)
-val_dataset = Datagen(args.verify_list)
-trainLoader = DataLoader(train_dataset, batch_size=args.batch_size, 
+train_dataset = Datagen(args.train_list, window_size=args.window_size, 
+                        random_sample=args.random_sample)
+val_dataset = Datagen(args.verify_list,window_size=args.window_size, 
+                      random_sample=args.random_sample)
+
+trainLoader = DataLoader(train_dataset, batch_size=args.batch_size,  
                          shuffle=True, pin_memory=True, drop_last=True)
 valLoader = DataLoader(val_dataset, batch_size=args.batch_size, drop_last=True, 
                        shuffle=True, pin_memory=True)

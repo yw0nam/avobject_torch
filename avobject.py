@@ -10,7 +10,7 @@ import os
 from tqdm import tqdm
 class avobject_model(nn.Module):
 
-    def __init__(self, learning_rate=0.0001, nOut=1024, n_neg=4):
+    def __init__(self, learning_rate=0.0001, nOut=1024, n_neg=20):
         super(avobject_model, self).__init__();
         
         self.n_neg = n_neg

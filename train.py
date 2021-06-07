@@ -86,8 +86,8 @@ print('Reading data ...')
 train_dataset = Datagen(args.train_list)
 val_dataset = Datagen(args.verify_list)
 trainLoader = DataLoader(train_dataset, batch_size=args.batch_size, 
-                         shuffle=True, pin_memory=True)
-valLoader = DataLoader(val_dataset, batch_size=args.batch_size, 
+                         shuffle=True, pin_memory=True, drop_last=True)
+valLoader = DataLoader(val_dataset, batch_size=args.batch_size, drop_last=True, 
                        shuffle=True, pin_memory=True)
 print('Reading done.')
 

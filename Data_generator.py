@@ -5,7 +5,7 @@ import torch
 class Datagen(data.Dataset):
     
     def __init__(self, data_txt,resize=(270, 480), 
-                 fps=25, sample_rate=16000, window_size=30):
+                 fps=25, sample_rate=16000, window_size=50):
 
         self.resize = resize
         self.fps = fps

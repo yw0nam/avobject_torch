@@ -83,10 +83,10 @@ class avobject_model(nn.Module):
             score, att_map = self.calc_av_scores(vid_sync, aud_sync)
         return score, att_map, vid_sync, aud_sync, label
     
-    def create_online_sync_negatives(self, vid_emb, aud_emb, n_neg=4):
+    def create_online_sync_negatives(self, vid_emb, aud_emb):
 
-        assert n_neg % 2 == 0
-        ww = n_neg // 2
+        assert self.n_neg % 2 == 0
+        ww = self.n_neg // 2
 
         fr_trunc, to_trunc = ww, aud_emb.shape[-1] - ww
         vid_emb_pos = vid_emb[:, :, fr_trunc:to_trunc]
@@ -96,7 +96,7 @@ class avobject_model(nn.Module):
         aud_emb_posneg = aud_emb_posneg.permute([0, 2, 1, 3])
 
         # this is the index of the positive samples within the posneg bundle
-        pos_idx = n_neg // 2
+        pos_idx = self.n_neg // 2
         aud_emb_pos = aud_emb[:, 0, :, fr_trunc:to_trunc]
         # make sure that we got the indices correctly
         assert torch.all(aud_emb_posneg[:, pos_idx] == aud_emb_pos)

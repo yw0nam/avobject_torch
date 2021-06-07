@@ -102,10 +102,13 @@ clr = s.updateLearningRate(1)
 
 while(1):   
     print(time.strftime("%Y-%m-%d %H:%M:%S"), it, "Start Iteration");
-
-    loss = s.train_network(trainLoader, evalmode=False);
-    valloss = s.train_network(valLoader,   evalmode=True);
-
+    
+    if not args.random_sample:
+        loss = s.train_network(trainLoader, evalmode=False);
+        valloss = s.train_network(valLoader,   evalmode=True);
+    else:
+        loss = s.train_network_with_random(trainLoader, evalmode=False);
+        valloss = s.train_network_with_random(valLoader,   evalmode=True);
 
     print(time.strftime("%Y-%m-%d %H:%M:%S"), "%s: IT %d, LR %f,TLOSS %f, VLOSS %f\n"%(args.save_path, it, max(clr), loss, valloss));
     scorefile.write("IT %d, LR %f, TLOSS %f, VLOSS %f\n"%(it, max(clr), loss, valloss));

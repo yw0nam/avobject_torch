@@ -1,0 +1,9 @@
+numpy>=1.19.2
+scipy
+scikit-learn
+tqdm
+opencv-python
+av
+python_speech_features
+librosa
+Pillow

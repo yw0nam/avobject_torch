@@ -47,8 +47,10 @@ a. run makefile_ls.py to generate dev.txt, test.txt
 python makefile_ls.py --root_dir dataset_root
 ```
 
-b. python train.py 
-
+b. Run training code(you can change the parameter, check the argparser in train.py)
+```shell
+python train.py 
+```
 # Result
 
 Note that, This repository is ongoing project.

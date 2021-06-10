@@ -51,6 +51,11 @@ b. Run training code(you can change the parameter, check the argparser in train.
 ```shell
 python train.py 
 ```
+
+# Prediction 
+
+Not implement yet, It will be released soon.
+
 # Result
 
 Note that, This repository is ongoing project.

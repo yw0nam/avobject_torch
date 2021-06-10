@@ -1,2 +1,72 @@
-# avobject_torch
-Unofficial implementation avobject
+# About this repository
+
+Unofficial pytorch implementation Self-Supervised Learning of Audio-Visual Objects from Video[[project page]](https://www.robots.ox.ac.uk/~vgg/research/avobjects/)
+
+## Installation
+### Requirements
+
+- Linux
+- Python 3.6+
+- PyTorch 1.8.1 or higher and CUDA
+
+a. Create a conda virtual environment and activate it.
+
+```shell
+conda create -n avobject_torch python=3.6
+conda activate avobject_torch
+```
+
+b. Install PyTorch and torchvision following the [official instructions](https://pytorch.org/)
+
+c. Clone this repository.
+
+```shell
+git clone https://github.com/yw0nam/perfectMatch
+cd perfectMatch
+```
+d. Install requirments.
+
+```shell
+pip install -r requirements.txt
+```
+
+
+# Dataset
+
+Trained by [LRS3](https://www.robots.ox.ac.uk/~vgg/data/lip_reading/lrs3.html) or [LRS2](https://www.robots.ox.ac.uk/~vgg/data/lip_reading/lrs2.html)
+
+data | training sample | validation sample |
+--- | --- | --- |
+LRS2 | 72052 | 158 |
+LRS3 | 88520 | 408 | 
+
+# Training 
+
+a. run makefile_ls.py to generate dev.txt, test.txt
+```shell
+python makefile_ls.py --root_dir dataset_root
+```
+
+b. python train.py 
+
+# Result
+
+Note, This repository is ongoing project.
+I'm still training this model, and implement downstream work(like Active speaker detection, Sound source seperation)
+
+
+data | train loss | validation loss | epoch |
+--- | --- | --- | --- |
+LRS2 | 0.359842 |  0.078407 | 2 |
+LRS3 | 0.689919 |  0.246397 | 1 |
+
+Here is prediction result trained by LRS2. 
+
+<img src="./demo/demo_0.png"> 
+<img src="./demo/demo_1.png"> 
+<img src="./demo/demo_2.png"> 
+
+
+# Thanks to
+
+The repository is based on [syncnet_trainer](https://github.com/joonson/syncnet_trainer) and [avobject](https://github.com/afourast/avobjects).

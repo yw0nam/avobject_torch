@@ -68,7 +68,7 @@ data | train loss | validation loss | epoch |
 LRS2 | 0.359842 |  0.078407 | 2 |
 LRS3 | 0.689919 |  0.246397 | 1 |
 
-Here is prediction result trained by LRS2. 
+Here is model prediction result trained by LRS2. 
 
 <img src="./demo/demo_0.png"> 
 <img src="./demo/demo_1.png"> 

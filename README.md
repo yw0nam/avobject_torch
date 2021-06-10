@@ -21,7 +21,7 @@ b. Install PyTorch and torchvision following the [official instructions](https:/
 c. Clone this repository.
 
 ```shell
-git clone https://github.com/yw0nam/perfectMatch
+git clone https://github.com/yw0nam/avobject_torch/
 cd perfectMatch
 ```
 d. Install requirments.

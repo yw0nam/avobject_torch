@@ -51,7 +51,8 @@ b. python train.py
 
 # Result
 
-Note, This repository is ongoing project.
+Note that, This repository is ongoing project.
+
 I'm still training this model, and implement downstream work(like Active speaker detection, Sound source seperation)
 
 

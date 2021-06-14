@@ -22,7 +22,7 @@ c. Clone this repository.
 
 ```shell
 git clone https://github.com/yw0nam/avobject_torch/
-cd perfectMatch
+cd avobject_torch
 ```
 d. Install requirments.
 

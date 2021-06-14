@@ -65,8 +65,8 @@ I'm still training this model, and implement downstream work(like Active speaker
 
 data | train loss | validation loss | epoch |
 --- | --- | --- | --- |
-LRS2 | 0.359842 |  0.078407 | 2 |
-LRS3 | 0.689919 |  0.246397 | 1 |
+LRS2 | 0.234909 |  0.065351 | 6 |
+LRS3 | 0.311373 |  0.208642 | 3 |
 
 Here is model prediction result trained by LRS2. 
 
